@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-schema-init
+  namespace: auth-service
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: db-schema-init
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-schema-init
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AUTH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secrets
+                  key: DATABASE_URL
+          command:
+            - sh
+            - -ec
+            - |
+              psql "$AUTH_DATABASE_URL" \
+                -v ON_ERROR_STOP=1 \
+                -f /schemas/auth-init.sql 
+          volumeMounts:
+            - name: db-init-auth-service-sql
+              mountPath: /schemas
+              readOnly: true
+      volumes:
+        - name: db-init-auth-service-sql
+          configMap:
+            name: db-init-sql

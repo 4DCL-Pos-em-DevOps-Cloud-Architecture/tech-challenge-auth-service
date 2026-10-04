@@ -89,3 +89,31 @@ curl http://localhost:8001/validate \
 ```
 
 Saída esperada: `Chave de API inválida ou inativa`
+
+## Manifestos Kubernetes
+
+Os manifestos deste serviço estão em `k8s/`. O serviço é publicado pelo Ingress na rota `/auth`.
+
+Antes da aplicação, substitua os seguintes valores:
+
+| Placeholder | Descrição |
+|---|---|
+| `<REGISTRY_URL>` | URI do registro ECR, por exemplo `123456789012.dkr.ecr.us-east-1.amazonaws.com` |
+| `<BASE64_ENCODED_DATABASE_URL>` | `DATABASE_URL` codificada em Base64 |
+| `<BASE64_ENCODED_MASTER_KEY>` | `MASTER_KEY` codificada em Base64 |
+
+Não versione os valores reais do Secret no repositório.
+
+Aplicação dos recursos:
+
+```bash
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml
+kubectl apply -f k8s/jobs/db-schema-init-job.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/ingress.yaml
+```
+
+O endpoint externo fica disponível em `/auth`. O health check interno é `/health` na porta `8001`.

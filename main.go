@@ -29,7 +29,7 @@ func main() {
 	}
 	portNumber, err := strconv.Atoi(port)
 	if err != nil || portNumber < 1 || portNumber > 65535 {
-		log.Fatalf("PORT inválida: %s", safeLogValue(port))
+		log.Fatal("PORT inválida")
 	}
 	port = strconv.Itoa(portNumber)
 
@@ -46,7 +46,7 @@ func main() {
 	// --- Conexão com o Banco ---
 	db, err := connectDB(databaseURL)
 	if err != nil {
-		log.Fatalf("Não foi possível conectar ao banco de dados: %s", safeLogValue(err.Error()))
+		log.Fatal("Não foi possível conectar ao banco de dados")
 	}
 	defer db.Close()
 

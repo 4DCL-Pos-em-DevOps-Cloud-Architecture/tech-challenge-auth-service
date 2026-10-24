@@ -9,7 +9,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: tech-challenge-auth-service
+  ECR_REPOSITORY: togglemaster-auth-service
   IMAGE_NAME: auth-service
 
 permissions:
